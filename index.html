@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celebration Cake</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define CSS variables for colors, similar to SASS variables */
+        :root {
+            --vanilla-icing: #f0e4d0;
+            --chocolate-cake: #553c13;
+            --plate-grey: #ccc;
+            --candle-red: #7B020B;
+            --flame-orange: #ff9800;
+            --flame-yellow: #ffeb3b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #4A4A4A; /* Changed to a darkish gray */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        /* Cake container - analogous to the .cake div in the inspiration */
+        .cake-container {
+            position: relative;
+            width: 280px; /* Slightly larger base width */
+            height: 250px; /* Adjusted height for proportions */
+            margin: 0 auto; /* Center the cake within the sticker wrapper */
+            /* Adjust top positioning to center vertically within the sticker-wrapper's content area */
+            transform: translateY(20px); /* Lift slightly to make space for plate shadow */
+        }
+
+        .cake-plate {
+            width: 300px; /* Slightly larger width */
+            height: 90px; /* Slightly larger height */
+            position: absolute;
+            bottom: -10px; /* Extend slightly below cake-container */
+            left: -10px; /* Adjusted to center the wider plate */
+            background-color: var(--plate-grey);
+            border-radius: 50%;
+            box-shadow:
+                0 2px 0px darken(var(--plate-grey), 10%),
+                0 4px 0px darken(var(--plate-grey), 10%),
+                0 5px 40px rgba(black, 0.5); /* Direct translation of the inspiration's shadow */
+            z-index: 0;
+        }
+
+        /* Cake layers - using the foodColoring concept */
+        .cake-layer {
+            position: absolute;
+            display: block;
+            width: 100%; /* Relative to cake-container */
+            height: 100px;
+            border-radius: 50%;
+            /* Replicating the @mixin foodColoring effect */
+            background-color: var(--chocolate-cake);
+            box-shadow:
+                0 2px 0px #5e4115, /* lighten(var(--chocolate-cake), 5%) */
+                0 4px 0px #4c3611, /* darken(var(--chocolate-cake), 8.2%) */
+                0 6px 0px #4b3511, /* darken(var(--chocolate-cake), 8.4%) */
+                0 8px 0px #4a3410, /* darken(var(--chocolate-cake), 8.6%) */
+                0 10px 0px #493310, /* darken(var(--chocolate-cake), 8.8%) */
+                0 12px 0px #48320f, /* darken(var(--chocolate-cake), 9%) */
+                0 14px 0px #47310f, /* darken(var(--chocolate-cake), 9.2%) */
+                0 16px 0px #46300e, /* darken(var(--chocolate-cake), 9.4%) */
+                0 18px 0px #452f0e, /* darken(var(--chocolate-cake), 9.6%) */
+                0 20px 0px #442e0d, /* darken(var(--chocolate-cake), 9.8%) */
+                0 22px 0px #432d0d, /* darken(var(--chocolate-cake), 10%) */
+                0 24px 0px #422c0c, /* darken(var(--chocolate-cake), 10.2%) */
+                0 26px 0px #412b0c, /* darken(var(--chocolate-cake), 10.4%) */
+                0 28px 0px #402a0b, /* darken(var(--chocolate-cake), 10.6%) */
+                0 30px 0px #3f290b; /* darken(var(--chocolate-cake), 10.8%) */
+        }
+
+        .layer-bottom { top: 120px; } /* Adjusted for new height */
+        .layer-middle { top: 80px; }
+        .layer-top { top: 40px; } /* Topmost layer */
+
+        .icing {
+            position: absolute;
+            top: 42px; /* Position slightly above the top layer */
+            left: 5px;
+            background-color: var(--vanilla-icing);
+            width: calc(100% - 10px); /* Slightly smaller than cake width */
+            height: 80px; /* Adjusted height */
+            border-radius: 50%;
+            z-index: 3; /* Ensure icing is above layers */
+        }
+        .icing::before {
+            content: "";
+            position: absolute;
+            top: 4px;
+            right: 5px;
+            bottom: 6px;
+            left: 5px;
+            background-color: #f2e7d5; /* lighten(var(--vanilla-icing), 3%) */
+            box-shadow:
+                0 0 4px #f5eadb, /* lighten(var(--vanilla-icing), 5%) */
+                0 0 4px #f5eadb,
+                0 0 4px #f5eadb;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* Drips styles removed */
+
+        .candle {
+            background-color: var(--candle-red);
+            width: 16px;
+            height: 50px;
+            border-radius: 8px / 4px;
+            position: absolute;
+            top: 20px; /* Position above the icing */
+            left: 50%;
+            margin-left: -8px;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Added shadow for sticker effect */
+        }
+        .candle::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%; /* Use 100% for responsiveness */
+            height: 8px;
+            border-radius: 50%;
+            background-color: #94020e; /* lighten(var(--candle-red), 10%) */
+        }
+
+        .flame {
+            position: absolute;
+            background-color: var(--flame-orange);
+            width: 15px;
+            height: 35px;
+            border-radius: 10px 10px 10px 10px / 25px 25px 10px 10px;
+            top: -34px;
+            left: 50%;
+            margin-left: -7.5px;
+            z-index: 10;
+            box-shadow:
+                0 0 10px rgba(var(--flame-orange), 0.5),
+                0 0 20px rgba(var(--flame-orange), 0.5),
+                0 0 60px rgba(var(--flame-orange), 0.5),
+                0 0 80px rgba(var(--flame-orange), 0.5);
+            transform-origin: 50% 90%;
+            animation: flicker 1s ease-in-out alternate infinite;
+        }
+
+        /* Keyframes for flame flicker - directly from inspiration */
+        @keyframes flicker {
+            0% {
+                transform: skewX(5deg);
+                box-shadow:
+                    0 0 10px rgba(var(--flame-orange), 0.2),
+                    0 0 20px rgba(var(--flame-orange), 0.2),
+                    0 0 60px rgba(var(--flame-orange), 0.2),
+                    0 0 80px rgba(var(--flame-orange), 0.2)
+            }
+            25% {
+                transform: skewX(-5deg);
+                box-shadow:
+                    0 0 10px rgba(var(--flame-orange), 0.5),
+                    0 0 20px rgba(var(--flame-orange), 0.5),
+                    0 0 60px rgba(var(--flame-orange), 0.5),
+                    0 0 80px rgba(var(--flame-orange), 0.5)
+            }
+            50% {
+                transform: skewX(10deg);
+                box-shadow:
+                    0 0 10px rgba(var(--flame-orange), 0.3),
+                    0 0 20px rgba(var(--flame-orange), 0.3),
+                    0 0 60px rgba(var(--flame-orange), 0.3),
+                    0 0 80px rgba(var(--flame-orange), 0.3)
+            }
+            75% {
+                transform: skewX(-10deg);
+                box-shadow:
+                    0 0 10px rgba(var(--flame-orange), 0.4),
+                    0 0 20px rgba(var(--flame-orange), 0.4),
+                    0 0 60px rgba(var(--flame-orange), 0.4),
+                    0 0 80px rgba(var(--flame-orange), 0.4)
+            }
+            100% {
+                transform: skewX(5deg);
+                box-shadow:
+                    0 0 10px rgba(var(--flame-orange), 0.5),
+                    0 0 20px rgba(var(--flame-orange), 0.5),
+                    0 0 60px rgba(var(--flame-orange), 0.5),
+                    0 0 80px rgba(var(--flame-orange), 0.5)
+            }
+        }
+
+        /* Manually calculated shades for the foodColoring effect */
+        .cake-layer {
+            box-shadow:
+                0 2px 0px #5e4115, /* lighten(var(--chocolate-cake), 5%) */
+                0 4px 0px #4c3611, /* darken(var(--chocolate-cake), 8.2%) */
+                0 6px 0px #4b3511, /* darken(var(--chocolate-cake), 8.4%) */
+                0 8px 0px #4a3410, /* darken(var(--chocolate-cake), 8.6%) */
+                0 10px 0px #493310, /* darken(var(--chocolate-cake), 8.8%) */
+                0 12px 0px #48320f, /* darken(var(--chocolate-cake), 9%) */
+                0 14px 0px #47310f, /* darken(var(--chocolate-cake), 9.2%) */
+                0 16px 0px #46300e, /* darken(var(--chocolate-cake), 9.4%) */
+                0 18px 0px #452f0e, /* darken(var(--chocolate-cake), 9.6%) */
+                0 20px 0px #442e0d, /* darken(var(--chocolate-cake), 9.8%) */
+                0 22px 0px #432d0d, /* darken(var(--chocolate-cake), 10%) */
+                0 24px 0px #422c0c, /* darken(var(--chocolate-cake), 10.2%) */
+                0 26px 0px #412b0c, /* darken(var(--chocolate-cake), 10.4%) */
+                0 28px 0px #402a0b, /* darken(var(--chocolate-cake), 10.6%) */
+                0 30px 0px #3f290b; /* darken(var(--chocolate-cake), 10.8%) */
+        }
+
+        .cake-plate {
+            box-shadow:
+                0 2px 0px #b3b3b3, /* darken(#ccc, 10%) */
+                0 4px 0px #b3b3b3, /* darken(#ccc, 10%) */
+                0 5px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .icing::before {
+            background-color: #f2e7d5; /* lighten(var(--vanilla-icing), 3%) */
+            box-shadow:
+                0 0 4px #f5eadb, /* lighten(var(--vanilla-icing), 5%) */
+                0 0 4px #f5eadb,
+                0 0 4px #f5eadb;
+        }
+
+        .candle::before {
+            background-color: #94020e; /* lighten(var(--candle-red), 10%) */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .cake-container {
+                width: 220px;
+                height: 200px;
+                transform: translateY(15px);
+            }
+            .cake-plate {
+                width: 240px; /* Adjusted for mobile */
+                height: 70px; /* Adjusted for mobile */
+                left: -10px; /* Adjusted to center */
+            }
+            .cake-layer {
+                height: 80px;
+            }
+            .layer-bottom { top: 100px; }
+            .layer-middle { top: 70px; }
+            .layer-top { top: 40px; }
+            .icing {
+                top: 42px;
+                height: 60px; /* Adjusted height for mobile */
+            }
+            .candle {
+                width: 14px;
+                height: 40px;
+                top: 15px;
+                margin-left: -7px;
+            }
+            .flame {
+                width: 12px;
+                height: 28px;
+                top: -28px;
+                margin-left: -6px;
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="cake-container">
+        <div class="cake-plate"></div>
+
+        <div class="layer cake-layer layer-bottom"></div>
+        <div class="layer cake-layer layer-middle"></div>
+        <div class="layer cake-layer layer-top"></div>
+
+        <div class="icing"></div>
+
+        <div class="candle">
+            <div class="flame"></div>
+        </div>
+    </div>
+</body>
+</html>
