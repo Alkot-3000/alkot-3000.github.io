@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Celebration Cake</title>
+    <title>ForWYL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -15,6 +15,19 @@
             --candle-red: #7B020B;
             --flame-orange: #ff9800;
             --flame-yellow: #ffeb3b;
+
+            /* New flower specific colors */
+            --flower-pink-center: #880e4f; /* Even darker pink for center for more contrast */
+            --flower-pink-petal: #ffccdd; /* Lighter pink for petals */
+
+            --flower-blue-center: #0d47a1; /* Even darker blue for center */
+            --flower-blue-petal: #a8dadc; /* Lighter blue for petals */
+
+            --flower-orange-center: #bf360c; /* Even darker orange for center */
+            --flower-orange-petal: #f4a261; /* Lighter orange for petals */
+
+            --flower-purple-center: #4a148c; /* Even darker purple for center */
+            --flower-purple-petal: #c792ea; /* Lighter purple for petals */
         }
 
         body {
@@ -25,6 +38,7 @@
             align-items: center;
             min-height: 100vh;
             padding: 1rem;
+            overflow: hidden; /* Hide overflowing flowers */
         }
 
         /* Cake container - analogous to the .cake div in the inspiration */
@@ -32,9 +46,9 @@
             position: relative;
             width: 280px; /* Slightly larger base width */
             height: 250px; /* Adjusted height for proportions */
-            margin: 0 auto; /* Center the cake within the sticker wrapper */
-            /* Adjust top positioning to center vertically within the sticker-wrapper's content area */
+            margin: 0 auto; /* Center the cake */
             transform: translateY(20px); /* Lift slightly to make space for plate shadow */
+            z-index: 10; /* Ensure cake is above flowers */
         }
 
         .cake-plate {
@@ -109,8 +123,6 @@
             z-index: 1;
         }
 
-        /* Drips styles removed */
-
         .candle {
             background-color: var(--candle-red);
             width: 16px;
@@ -122,6 +134,7 @@
             margin-left: -8px;
             z-index: 10;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Added shadow for sticker effect */
+            cursor: pointer; /* Indicate it's clickable */
         }
         .candle::before {
             content: "";
@@ -151,6 +164,13 @@
                 0 0 80px rgba(var(--flame-orange), 0.5);
             transform-origin: 50% 90%;
             animation: flicker 1s ease-in-out alternate infinite;
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; /* Smooth extinguishing */
+        }
+
+        /* Class for extinguished flame */
+        .flame.extinguished {
+            opacity: 0;
+            transform: scale(0.1) translateX(-50%); /* Shrink and fade out */
         }
 
         /* Keyframes for flame flicker - directly from inspiration */
@@ -236,6 +256,87 @@
             background-color: #94020e; /* lighten(var(--candle-red), 10%) */
         }
 
+        /* Flower animation styles */
+        .flower-container {
+            position: fixed; /* Fixed to viewport */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allow clicks to pass through */
+            z-index: 1; /* Below the cake */
+        }
+
+        .flower {
+            position: absolute;
+            width: 40px; /* Overall flower container size - even larger */
+            height: 40px;
+            opacity: 0;
+            animation: floatUpAndFade 5s ease-out forwards;
+            filter: blur(0.5px);
+            z-index: 2;
+            transform-style: preserve-3d; /* Enable 3D transforms for children */
+            transform-origin: 50% 50%; /* For overall flower animation */
+            display: flex; /* To center the flower-center */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .flower-center {
+            position: relative; /* For absolute positioning of petals */
+            width: 16px; /* Central circle size - larger */
+            height: 16px;
+            border-radius: 50%;
+            z-index: 2; /* Ensure center is above petals */
+        }
+
+        .petal {
+
+            position: absolute;
+            width: 14px; /* Petal width - larger */
+            height: 28px; /* Petal height - larger */
+            border-radius: 50% / 60% 60% 40% 40%; /* Oval shape */
+            top: 50%;
+            left: 50%;
+            /* Position one end on the central circle and rotate */
+            transform-origin: 50% 100%; /* Rotate around its bottom center */
+            /* Adjusted translate to ensure petal base is on center, and removed rotateX for flat petals */
+            transform: translate(-50%, -100%) rotate(var(--petal-rotation, 0deg)); /* Adjusted translateY to expose center more */
+            z-index: 1; /* Petals are underneath the center */
+        }
+
+        /* Color variations for flowers */
+        .flower.color-pink .flower-center { background-color: var(--flower-pink-center); }
+        .flower.color-pink .petal { background-color: var(--flower-pink-petal); }
+
+        .flower.color-blue .flower-center { background-color: var(--flower-blue-center); }
+        .flower.color-blue .petal { background-color: var(--flower-blue-petal); }
+
+        .flower.color-orange .flower-center { background-color: var(--flower-orange-center); }
+        .flower.color-orange .petal { background-color: var(--flower-orange-petal); }
+
+        .flower.color-purple .flower-center { background-color: var(--flower-purple-center); }
+        .flower.color-purple .petal { background-color: var(--flower-purple-petal); }
+
+
+        @keyframes floatUpAndFade {
+            0% {
+                transform: translateY(0) translateX(0) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1; /* Appear quickly */
+                transform: translateY(-10vh) translateX(var(--random-x, 0px)) scale(1);
+            }
+            80% {
+                opacity: 0.8; /* Stay visible for a while */
+            }
+            100% {
+                transform: translateY(-100vh) translateX(var(--random-x, 0px)) scale(0.8);
+                opacity: 0; /* Fade out at top */
+            }
+        }
+
         /* Responsive adjustments */
         @media (max-width: 640px) {
             .cake-container {
@@ -270,10 +371,50 @@
                 top: -28px;
                 margin-left: -6px;
             }
+            .flower {
+                width: 35px; /* Smaller overall flower size for mobile */
+                height: 35px;
+            }
+            .flower-center {
+              background: red;
+                width: 14px; /* Smaller central circle for mobile */
+                height: 14px;
+                border: 2px solid white;
+            }
+            .petal {
+                width: 12px; /* Smaller petal width for mobile */
+                height: 24px; /* Smaller petal height for mobile */
+                transform: translate(-50%, -85%) rotate(var(--petal-rotation, 0deg)); /* Reverted rotateX for mobile */
+            }
         }
+
+        .top-message {
+          position: fixed;
+          top: 25%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          font-size: 2rem; /* Big white letters */
+          font-weight: 600;
+          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4); /* Optional: subtle shadow for readability */
+          text-align: center;
+          opacity: 0;
+          transition: opacity 1s ease-in-out;
+          pointer-events: none;
+          z-index: 9999; /* Ensure it's above everything */
+          background: none !important; /* No background or border */
+          border: none !important;
+      }
+      .top-message.show {
+          opacity: 1;
+      }
+
+
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
+    <div class="flower-container" id="flower-container"></div>
+
     <div class="cake-container">
         <div class="cake-plate"></div>
 
@@ -283,9 +424,92 @@
 
         <div class="icing"></div>
 
-        <div class="candle">
-            <div class="flame"></div>
+        <div class="candle" id="candle">
+            <div class="flame" id="flame"></div>
         </div>
     </div>
+
+    <div class="top-message" id="top-message">
+      Hello, Granny Vanessa.
+    </div>
+
+
+    <script>
+        const candle = document.getElementById('candle');
+        const flame = document.getElementById('flame');
+        const flowerContainer = document.getElementById('flower-container');
+        let isFlameLit = true; // Track flame state
+
+        function extinguishFlame() {
+          if (isFlameLit) {
+              flame.classList.add('extinguished');
+              isFlameLit = false;
+
+              // Show message right over the cake
+              const message = document.getElementById('top-message');
+              message.classList.add('show');
+
+              // Hide message after 3 seconds
+              setTimeout(() => {
+                  message.classList.remove('show');
+              }, 3000);
+          }
+      }
+
+
+
+        // Add event listener to the candle for tap/click
+        candle.addEventListener('click', extinguishFlame);
+        // For better mobile compatibility, also listen for touchstart
+        candle.addEventListener('touchstart', extinguishFlame);
+
+        // Function to create and animate a single flower
+        function createFlower() {
+            const flowerWrapper = document.createElement('div');
+            flowerWrapper.classList.add('flower');
+
+            const flowerCenter = document.createElement('div');
+            flowerCenter.classList.add('flower-center');
+
+            const petalCount = 8; // Number of petals
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.classList.add('petal');
+                // Set custom property for rotation
+                petal.style.setProperty('--petal-rotation', `${i * (360 / petalCount)}deg`);
+                flowerCenter.appendChild(petal);
+            }
+
+            flowerWrapper.appendChild(flowerCenter);
+
+            // Assign a random color class to the flower wrapper
+            const colorClasses = ['color-pink', 'color-blue', 'color-orange', 'color-purple'];
+            const randomColorClass = colorClasses[Math.floor(Math.random() * colorClasses.length)];
+            flowerWrapper.classList.add(randomColorClass);
+
+            // Random horizontal starting position
+            const startX = Math.random() * window.innerWidth;
+            flowerWrapper.style.left = `${startX}px`;
+            flowerWrapper.style.bottom = '-30px'; // Start slightly below the viewport
+
+            // Randomize animation duration and horizontal drift
+            const duration = 4 + Math.random() * 3; // 4 to 7 seconds
+            const randomXDrift = (Math.random() - 0.5) * 200; // -100px to 100px horizontal drift
+            flowerWrapper.style.animationDuration = `${duration}s`;
+            flowerWrapper.style.setProperty('--random-x', `${randomXDrift}px`);
+
+            flowerContainer.appendChild(flowerWrapper);
+
+            // Remove flower after animation completes to prevent DOM clutter
+            flowerWrapper.addEventListener('animationend', () => {
+                flowerWrapper.remove();
+            });
+        }
+
+        // Spawn flowers at regular intervals
+        setInterval(createFlower, 500); // Spawn a flower every 0.5 seconds
+
+        
+    </script>
 </body>
 </html>
